@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: #050507;
+    color: #e2e2e2;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Offset fixed nav (64px) + breathing room */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+
+  ::selection {
+    background-color: rgba(201, 168, 76, 0.25);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #050507;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(201, 168, 76, 0.35);
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 168, 76, 0.55);
+  }
+}
+
+@layer utilities {
+  /* ── Gold gradient text ────────────────────────────────────── */
+  .gold-text {
+    background: linear-gradient(135deg, #F0C040 0%, #C9A84C 50%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Glassmorphism card ────────────────────────────────────── */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(201, 168, 76, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* ── Gold perimeter glow ───────────────────────────────────── */
+  .gold-border-glow {
+    box-shadow: 0 0 40px rgba(201, 168, 76, 0.07),
+                inset 0 0 30px rgba(201, 168, 76, 0.02);
+  }
+
+  /* ── Screenshot panel: ambient glow on hover ─────────────── */
+  .screenshot-wrap {
+    position: relative;
+  }
+  .screenshot-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -2rem;
+    border-radius: 2rem;
+    background: radial-gradient(
+      ellipse 80% 70% at 50% 50%,
+      rgba(201, 168, 76, 0.10) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .screenshot-wrap:hover::before {
+    opacity: 1;
+  }
+
+  /* ── Thin horizontal section separator ───────────────────── */
+  .section-rule {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(201, 168, 76, 0.16) 25%,
+      rgba(201, 168, 76, 0.16) 75%,
+      transparent 100%
+    );
+  }
+
+  /* ── Main section spacing ──────────────────────────────────── */
+  .section-padding {
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+  }
+
+  /* ── Section label (kicker) ────────────────────────────────── */
+  .section-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: #C9A84C;
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── Shared CTA button styles ──────────────────────────────── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    color: #0a0a0e;
+    background: #C9A84C;
+    box-shadow: 0 8px 32px rgba(201, 168, 76, 0.25), 0 2px 8px rgba(0,0,0,0.4);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary:hover {
+    background: #D4AF37;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px rgba(201, 168, 76, 0.35), 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    color: #C9A84C;
+    border: 1px solid rgba(201, 168, 76, 0.35);
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .btn-secondary:hover {
+    border-color: rgba(201, 168, 76, 0.65);
+    background: rgba(201, 168, 76, 0.05);
+    transform: translateY(-1px);
+  }
+  .btn-secondary:active {
+    transform: translateY(0);
+  }
+}
