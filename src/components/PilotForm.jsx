@@ -10,7 +10,8 @@ const ROLES = [
   'Other',
 ]
 
-const INITIAL = { name: '', email: '', role: '', organisation: '', areaOfLaw: '', message: '' }
+const FORM_NAME = 'sala-demo-request'
+const INITIAL = { name: '', email: '', firmOrganization: '', role: '', message: '' }
 
 function Field({ label, required, children }) {
   return (
@@ -31,6 +32,8 @@ export default function PilotForm() {
   const [form, setForm] = useState(INITIAL)
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(false)
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
@@ -38,20 +41,44 @@ export default function PilotForm() {
     const e = {}
     if (!form.name.trim()) e.name = true
     if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = true
+    if (!form.firmOrganization.trim()) e.firmOrganization = true
     if (!form.role) e.role = true
-    if (!form.organisation.trim()) e.organisation = true
     return e
   }
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = async (ev) => {
     ev.preventDefault()
     const e = validate()
     if (Object.keys(e).length > 0) {
       setErrors(e)
+      setSubmitError(false)
       return
     }
+
     setErrors({})
-    setSubmitted(true)
+    setSubmitError(false)
+    setSubmitting(true)
+
+    const formData = new FormData(ev.currentTarget)
+
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString(),
+      })
+
+      if (!response.ok) {
+        throw new Error('Form submission failed')
+      }
+
+      setSubmitted(true)
+      setForm(INITIAL)
+    } catch {
+      setSubmitError(true)
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -98,6 +125,9 @@ export default function PilotForm() {
           ) : (
             <motion.form
               key="form"
+              name={FORM_NAME}
+              method="POST"
+              data-netlify="true"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -105,32 +135,55 @@ export default function PilotForm() {
               noValidate
               className="glass-card rounded-xl p-8 space-y-5 gold-border-glow"
             >
+              <input type="hidden" name="form-name" value={FORM_NAME} />
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <Field label="Full Name" required>
+                <Field label="Name" required>
                   <input
                     type="text"
+                    name="name"
                     placeholder="Your name"
                     value={form.name}
                     onChange={set('name')}
+                    required
+                    aria-invalid={errors.name ? 'true' : 'false'}
                     className={`${inputCls} ${errors.name ? 'border-red-700' : ''}`}
                   />
                 </Field>
-                <Field label="Email Address" required>
+                <Field label="Email" required>
                   <input
                     type="email"
+                    name="email"
                     placeholder="you@example.com"
                     value={form.email}
                     onChange={set('email')}
+                    required
+                    aria-invalid={errors.email ? 'true' : 'false'}
                     className={`${inputCls} ${errors.email ? 'border-red-700' : ''}`}
                   />
                 </Field>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <Field label="Firm/Organization" required>
+                  <input
+                    type="text"
+                    name="firmOrganization"
+                    placeholder="Firm / chambers / institution"
+                    value={form.firmOrganization}
+                    onChange={set('firmOrganization')}
+                    required
+                    aria-invalid={errors.firmOrganization ? 'true' : 'false'}
+                    className={`${inputCls} ${errors.firmOrganization ? 'border-red-700' : ''}`}
+                  />
+                </Field>
                 <Field label="Role" required>
                   <select
+                    name="role"
                     value={form.role}
                     onChange={set('role')}
+                    required
+                    aria-invalid={errors.role ? 'true' : 'false'}
                     className={`${inputCls} ${errors.role ? 'border-red-700' : ''}`}
                   >
                     <option value="" disabled>Select role…</option>
@@ -139,29 +192,11 @@ export default function PilotForm() {
                     ))}
                   </select>
                 </Field>
-                <Field label="Organisation" required>
-                  <input
-                    type="text"
-                    placeholder="Firm / chambers / institution"
-                    value={form.organisation}
-                    onChange={set('organisation')}
-                    className={`${inputCls} ${errors.organisation ? 'border-red-700' : ''}`}
-                  />
-                </Field>
               </div>
-
-              <Field label="Area of Law">
-                <input
-                  type="text"
-                  placeholder="e.g. Criminal, Bail, Labour, Commercial…"
-                  value={form.areaOfLaw}
-                  onChange={set('areaOfLaw')}
-                  className={inputCls}
-                />
-              </Field>
 
               <Field label="Message">
                 <textarea
+                  name="message"
                   placeholder="Tell us about your practice and how SALA might assist…"
                   value={form.message}
                   onChange={set('message')}
@@ -174,11 +209,18 @@ export default function PilotForm() {
                 <p className="text-xs text-red-400">Please fill in all required fields correctly.</p>
               )}
 
+              {submitError && (
+                <p className="text-xs text-red-400">
+                  The request could not be submitted. Please try again.
+                </p>
+              )}
+
               <button
                 type="submit"
+                disabled={submitting}
                 className="w-full py-3.5 rounded text-sm font-semibold text-black bg-gold-500 hover:bg-gold-400 active:scale-[0.99] transition-all duration-200 shadow-[0_8px_32px_rgba(201,168,76,0.25)] hover:shadow-[0_12px_40px_rgba(201,168,76,0.35)] mt-2 tracking-wide"
               >
-                Submit Demo Request
+                {submitting ? 'Submitting...' : 'Submit Demo Request'}
               </button>
 
               <p className="text-[11px] text-gray-600 text-center leading-relaxed">

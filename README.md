@@ -108,7 +108,7 @@ base: '/sala-landing-page/'
 
 ## Notes
 
-- The form on the Demo section is **frontend-only**. No data is submitted anywhere.
-  To wire up submission, integrate a service such as Formspree, EmailJS, or a backend endpoint.
+- The form on the Demo section uses **Netlify Forms**. No backend, API keys, or external lead-capture services are required.
+- Submissions appear in the Netlify site dashboard under **Forms** after the deployed site receives entries.
 - The 3D scene degrades gracefully: if WebGL is unavailable, the canvas is silently omitted.
 - Fonts are loaded from Google Fonts. For a fully offline build, download and self-host.

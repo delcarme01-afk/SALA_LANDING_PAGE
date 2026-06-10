@@ -11,6 +11,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <form name="sala-demo-request" method="POST" data-netlify="true" hidden>
+      <input type="hidden" name="form-name" value="sala-demo-request" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="text" name="firmOrganization" />
+      <select name="role">
+        <option value=""></option>
+      </select>
+      <textarea name="message"></textarea>
+    </form>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
