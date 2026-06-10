@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackDemoRequestClick } from '../lib/analytics'
 
 const links = [
   { label: 'In Action', href: '#in-action' },
@@ -11,6 +12,11 @@ const links = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const handleMobileDemoClick = () => {
+    trackDemoRequestClick('mobile_nav')
+    setMenuOpen(false)
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -47,6 +53,7 @@ export default function Nav() {
           ))}
           <a
             href="#demo-request"
+            onClick={() => trackDemoRequestClick('desktop_nav')}
             className="text-sm font-semibold px-5 py-2 rounded border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-black transition-all duration-200"
           >
             Request Demo
@@ -87,7 +94,7 @@ export default function Nav() {
               ))}
               <a
                 href="#demo-request"
-                onClick={() => setMenuOpen(false)}
+                onClick={handleMobileDemoClick}
                 className="text-sm font-semibold px-4 py-2 rounded border border-gold-500 text-gold-400 text-center mt-2"
               >
                 Request Demo

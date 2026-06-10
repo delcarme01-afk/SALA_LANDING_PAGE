@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { trackDemoRequestClick } from '../lib/analytics'
 
 const cards = [
   {
@@ -95,6 +96,7 @@ export default function Differentiator() {
         >
           <a
             href="#demo-request"
+            onClick={() => trackDemoRequestClick('differentiator')}
             className="inline-flex items-center gap-2 text-sm font-semibold text-gold-500 hover:text-gold-300 transition-colors group"
           >
             Request Demo

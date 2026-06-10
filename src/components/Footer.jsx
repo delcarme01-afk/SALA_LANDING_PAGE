@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { trackDemoRequestClick } from '../lib/analytics'
 
 const navLinks = [
   { label: 'Features', href: '#features' },
@@ -29,6 +30,7 @@ export default function Footer() {
               <a
                 key={l.href}
                 href={l.href}
+                onClick={l.href === '#demo-request' ? () => trackDemoRequestClick('footer') : undefined}
                 className="text-xs text-gray-500 hover:text-gold-400 transition-colors"
               >
                 {l.label}

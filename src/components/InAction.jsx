@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackDemoRequestClick, trackScreenshotOpen } from '../lib/analytics'
 
 // -----------------------------------------------------------------------------
 // SCREENSHOTS
@@ -263,6 +264,10 @@ const panels = [
 export default function InAction() {
   const [lightbox, setLightbox] = useState(null)
   const close = useCallback(() => setLightbox(null), [])
+  const openLightbox = useCallback((panel) => {
+    trackScreenshotOpen(panel)
+    setLightbox(panel)
+  }, [])
 
   return (
     <section id="in-action" className="section-padding bg-[#050507] relative overflow-hidden">
@@ -318,6 +323,7 @@ export default function InAction() {
                   {/* Per-panel inline CTA */}
                   <a
                     href="#demo-request"
+                    onClick={() => trackDemoRequestClick(`in_action_${p.id}`)}
                     className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-gold-600 hover:text-gold-400 transition-colors group"
                   >
                     Request Demo
@@ -333,7 +339,7 @@ export default function InAction() {
                     src={p.src}
                     alt={`SALA — ${p.title}`}
                     title={p.title}
-                    onClick={() => setLightbox(p)}
+                    onClick={() => openLightbox(p)}
                   />
                 </div>
               </motion.div>
@@ -353,7 +359,11 @@ export default function InAction() {
             <p className="text-base font-serif text-white mb-1">Ready to see SALA?</p>
             <p className="text-sm text-gray-600">SALA is currently in controlled testing.</p>
           </div>
-          <a href="#demo-request" className="btn-primary flex-shrink-0">
+          <a
+            href="#demo-request"
+            onClick={() => trackDemoRequestClick('in_action_cta')}
+            className="btn-primary flex-shrink-0"
+          >
             Request Demo
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />

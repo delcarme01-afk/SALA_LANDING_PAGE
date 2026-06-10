@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackDemoRequestSubmit } from '../lib/analytics'
 
 const ROLES = [
   'Attorney',
@@ -46,6 +47,7 @@ export default function PilotForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(false)
+  const submittingRef = useRef(false)
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
@@ -60,6 +62,8 @@ export default function PilotForm() {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault()
+    if (submittingRef.current) return
+
     const e = validate()
     if (Object.keys(e).length > 0) {
       setErrors(e)
@@ -69,6 +73,7 @@ export default function PilotForm() {
 
     setErrors({})
     setSubmitError(false)
+    submittingRef.current = true
     setSubmitting(true)
 
     try {
@@ -82,11 +87,13 @@ export default function PilotForm() {
         throw new Error('Form submission failed')
       }
 
+      trackDemoRequestSubmit()
       setSubmitted(true)
       setForm(INITIAL)
     } catch {
       setSubmitError(true)
     } finally {
+      submittingRef.current = false
       setSubmitting(false)
     }
   }
