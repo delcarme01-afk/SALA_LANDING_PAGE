@@ -11,7 +11,19 @@ const ROLES = [
 ]
 
 const FORM_NAME = 'sala-demo-request'
+const FORM_ENDPOINT = '/index.html'
 const INITIAL = { name: '', email: '', firmOrganization: '', role: '', message: '' }
+
+const encodeFormData = (values) => {
+  const data = new URLSearchParams()
+  data.append('form-name', FORM_NAME)
+
+  Object.entries(values).forEach(([key, value]) => {
+    data.append(key, value.trim())
+  })
+
+  return data.toString()
+}
 
 function Field({ label, required, children }) {
   return (
@@ -59,13 +71,11 @@ export default function PilotForm() {
     setSubmitError(false)
     setSubmitting(true)
 
-    const formData = new FormData(ev.currentTarget)
-
     try {
-      const response = await fetch('/', {
+      const response = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData).toString(),
+        body: encodeFormData(form),
       })
 
       if (!response.ok) {
@@ -127,6 +137,7 @@ export default function PilotForm() {
               key="form"
               name={FORM_NAME}
               method="POST"
+              action={FORM_ENDPOINT}
               data-netlify="true"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
